@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balance Tracker — Wireframe</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --border: #cbd5e1;
+      --border-dark: #94a3b8;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #1e293b;
+      --credit: #15803d;
+      --debit: #b91c1c;
+      --header-bg: #e2e8f0;
+      --row-alt: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+      line-height: 1.4;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 2px solid var(--border-dark);
+      box-shadow: 4px 4px 0 var(--border);
+    }
+
+    /* Top Bar */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 2px solid var(--border-dark);
+      background: var(--header-bg);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .date-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border: 1.5px solid var(--border-dark);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: var(--row-alt);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.92;
+      background: var(--accent);
+    }
+
+    .date-display {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border: 1.5px dashed var(--border-dark);
+      background: var(--surface);
+      min-width: 150px;
+      text-align: center;
+    }
+
+    /* Summary Strip */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 2px solid var(--border-dark);
+    }
+
+    .summary-cell {
+      padding: 14px 16px;
+      border-right: 1px solid var(--border);
+    }
+
+    .summary-cell:last-child {
+      border-right: none;
+    }
+
+    .summary-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .summary-value {
+      font-size: 20px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .opening-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .opening-input {
+      font-family: inherit;
+      font-size: 18px;
+      font-weight: 700;
+      width: 120px;
+      padding: 2px 6px;
+      border: 1.5px solid var(--border-dark);
+      background: #fff;
+    }
+
+    .credit-text {
+      color: var(--credit);
+    }
+
+    .debit-text {
+      color: var(--debit);
+    }
+
+    /* Excel-style Sheet */
+    .sheet-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--header-bg);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 2px solid var(--border-dark);
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--row-alt);
+    }
+
+    .col-sno {
+      width: 70px;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .col-money {
+      width: 150px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+
+    .col-desc {
+      min-width: 220px;
+    }
+
+    .col-type {
+      width: 140px;
+    }
+
+    .col-time {
+      width: 110px;
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    tbody tr {
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+
+    tbody tr.pressing {
+      background: #fee2e2 !important;
+    }
+
+    tbody tr.delete-ready {
+      background: #fef2f2 !important;
+      outline: 2px solid var(--debit);
+      outline-offset: -2px;
+    }
+
+    .delete-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: #fef2f2;
+      border-top: 1.5px solid var(--debit);
+      font-size: 13px;
+      color: var(--debit);
+      font-weight: 600;
+    }
+
+    .delete-bar.visible {
+      display: flex;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid currentColor;
+      text-transform: uppercase;
+    }
+
+    .badge-credit {
+      color: var(--credit);
+      background: #f0fdf4;
+    }
+
+    .badge-debit {
+      color: var(--debit);
+      background: #fef2f2;
+    }
+
+    /* Add Entry Row */
+    .add-row {
+      display: grid;
+      grid-template-columns: 70px 160px 1fr 150px 110px;
+      border-top: 2px solid var(--border-dark);
+      background: #f1f5f9;
+    }
+
+    .add-cell {
+      padding: 8px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-cell:last-child {
+      border-right: none;
+    }
+
+    .add-cell input,
+    .add-cell select {
+      width: 100%;
+      padding: 6px 8px;
+      font-family: inherit;
+      font-size: 13px;
+      border: 1.5px solid var(--border-dark);
+      background: #fff;
+    }
+
+    /* Footer / End of Day */
+    .footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      border-top: 2px solid var(--border-dark);
+      background: var(--header-bg);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .eod-note {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .empty-row td {
+      text-align: center;
+      color: var(--muted);
+      padding: 28px;
+      font-style: italic;
+    }
+
+    @media (max-width: 720px) {
+      .summary-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .add-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <!-- Top Navigation -->
+    <div class="topbar">
+      <div class="brand">Balance Tracker [Wireframe]</div>
+      <div class="date-nav">
+        <button class="btn" id="prevDayBtn">&larr; Prev Day</button>
+        <div class="date-display" id="dateDisplay">Day 1</div>
+        <button class="btn" id="nextDayBtn">Next Day &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Summary Strip -->
+    <div class="summary-strip">
+      <div class="summary-cell">
+        <div class="summary-label">Opening Balance</div>
+        <div class="opening-input-wrap">
+          <span>&#8377;</span>
+          <input type="number" id="openingBalanceInput" class="opening-input" value="1000" step="0.01" />
+        </div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-label">Total Credit (+)</div>
+        <div class="summary-value credit-text" id="totalCredit">&#8377;0.00</div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-label">Total Debit (-)</div>
+        <div class="summary-value debit-text" id="totalDebit">&#8377;0.00</div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-label">Closing Balance</div>
+        <div class="summary-value" id="closingBalance">&#8377;1000.00</div>
+      </div>
+    </div>
+
+    <!-- Excel-Style Sheet -->
+    <div class="sheet-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-sno">S.No</th>
+            <th class="col-money">Money</th>
+            <th class="col-desc">Description</th>
+            <th class="col-type">Credit / Debit</th>
+            <th class="col-time">Time</th>
+          </tr>
+        </thead>
+        <tbody id="sheetBody">
+          <!-- Rows rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Long-press Delete Prompt -->
+    <div class="delete-bar" id="deleteBar">
+      <span id="deleteBarText">Delete selected entry?</span>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn" id="cancelDeleteBtn">Cancel</button>
+        <button class="btn" id="confirmDeleteBtn"
+          style="border-color: var(--debit); color: var(--debit);">Delete</button>
+      </div>
+    </div>
+
+    <!-- Inline Add Row -->
+    <form class="add-row" id="addForm">
+      <div class="add-cell" style="color: var(--muted); font-weight: 700;">#</div>
+      <div class="add-cell">
+        <input type="number" id="moneyInput" placeholder="Amount" step="0.01" min="0.01" required />
+      </div>
+      <div class="add-cell">
+        <input type="text" id="descInput" placeholder="Description (e.g. Lunch, Groceries, Refund)" required />
+      </div>
+      <div class="add-cell">
+        <select id="typeInput">
+          <option value="debit">Debit (-)</option>
+          <option value="credit">Credit (+)</option>
+        </select>
+      </div>
+      <div class="add-cell">
+        <button type="submit" class="btn btn-primary" style="width: 100%;">+ Add</button>
+      </div>
+    </form>
+
+    <!-- End of Day Footer -->
+    <div class="footer-bar">
+      <div class="eod-note" id="eodNote">
+        End of Day: Closing balance will automatically become Day 2's Opening Balance.
+      </div>
+      <button class="btn btn-primary" id="closeDayBtn">Close Day &amp; Go to Next Day &rarr;</button>
+    </div>
+  </div>
+
+  <script>
+    // Simple in-memory state for wireframe demonstration
+    function toDateKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function addDays(dateKey, delta) {
+      const [y, m, d] = dateKey.split('-').map(Number);
+      const dt = new Date(y, m - 1, d + delta);
+      return toDateKey(dt);
+    }
+
+    function formatDisplayDate(dateKey) {
+      const [y, m, d] = dateKey.split('-').map(Number);
+      return new Date(y, m - 1, d).toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+
+    function currentTimeStr() {
+      return new Date().toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+
+    const startDateKey = toDateKey(new Date());
+    let currentDateKey = startDateKey;
+    let selectedDeleteIdx = null;
+    let pressTimer = null;
+
+    const days = {
+      [startDateKey]: {
+        opening: 1000,
+        entries: [
+          { money: 120, desc: 'Morning Coffee & Breakfast', type: 'debit', time: '08:30 AM' },
+          { money: 500, desc: 'Freelance Payment', type: 'credit', time: '11:15 AM' },
+          { money: 250, desc: 'Groceries', type: 'debit', time: '06:45 PM' }
+        ]
+      }
+    };
+
+    const dateDisplay = document.getElementById('dateDisplay');
+    const openingInput = document.getElementById('openingBalanceInput');
+    const totalCreditEl = document.getElementById('totalCredit');
+    const totalDebitEl = document.getElementById('totalDebit');
+    const closingBalanceEl = document.getElementById('closingBalance');
+    const sheetBody = document.getElementById('sheetBody');
+    const eodNote = document.getElementById('eodNote');
+    const deleteBar = document.getElementById('deleteBar');
+    const deleteBarText = document.getElementById('deleteBarText');
+
+    function getDayData(dateKey) {
+      if (!days[dateKey]) {
+        const prevKey = addDays(dateKey, -1);
+        const prevClosing = days[prevKey] ? calcClosing(days[prevKey]) : 0;
+        days[dateKey] = { opening: prevClosing, entries: [] };
+      }
+      return days[dateKey];
+    }
+
+    function calcTotals(dayData) {
+      let credit = 0;
+      let debit = 0;
+      for (const e of dayData.entries) {
+        if (e.type === 'credit') credit += e.money;
+        else debit += e.money;
+      }
+      return { credit, debit };
+    }
+
+    function calcClosing(dayData) {
+      const { credit, debit } = calcTotals(dayData);
+      return dayData.opening + credit - debit;
+    }
+
+    function fmt(num) {
+      return '₹' + Number(num).toFixed(2);
+    }
+
+    function clearDeleteSelection() {
+      selectedDeleteIdx = null;
+      deleteBar.classList.remove('visible');
+    }
+
+    function render() {
+      const data = getDayData(currentDateKey);
+      const nextDateKey = addDays(currentDateKey, 1);
+      dateDisplay.textContent = formatDisplayDate(currentDateKey);
+      openingInput.value = data.opening;
+      openingInput.disabled = currentDateKey !== startDateKey;
+
+      const { credit, debit } = calcTotals(data);
+      const closing = calcClosing(data);
+
+      totalCreditEl.textContent = fmt(credit);
+      totalDebitEl.textContent = fmt(debit);
+      closingBalanceEl.textContent = fmt(closing);
+      eodNote.textContent = `End of Day: Closing balance (${fmt(closing)}) becomes ${formatDisplayDate(nextDateKey)}'s Opening Balance. (Long-press a row to delete)`;
+
+      sheetBody.innerHTML = '';
+      if (data.entries.length === 0) {
+        sheetBody.innerHTML = '<tr class="empty-row"><td colspan="5">No entries for this day yet. Add one below.</td></tr>';
+        clearDeleteSelection();
+        return;
+      }
+
+      data.entries.forEach((entry, idx) => {
+        const tr = document.createElement('tr');
+        if (selectedDeleteIdx === idx) tr.classList.add('delete-ready');
+
+        tr.innerHTML = `
+          <td class="col-sno">${idx + 1}</td>
+          <td class="col-money ${entry.type === 'credit' ? 'credit-text' : 'debit-text'}">
+            ${entry.type === 'credit' ? '+' : '-'}${fmt(entry.money)}
+          </td>
+          <td class="col-desc">${entry.desc}</td>
+          <td class="col-type">
+            <span class="badge ${entry.type === 'credit' ? 'badge-credit' : 'badge-debit'}">
+              ${entry.type}
+            </span>
+          </td>
+          <td class="col-time">${entry.time}</td>
+        `;
+
+        const startPress = () => {
+          tr.classList.add('pressing');
+          pressTimer = setTimeout(() => {
+            tr.classList.remove('pressing');
+            selectedDeleteIdx = idx;
+            deleteBarText.textContent = `Delete "${entry.desc}" (${fmt(entry.money)})?`;
+            deleteBar.classList.add('visible');
+            render();
+          }, 550);
+        };
+
+        const cancelPress = () => {
+          tr.classList.remove('pressing');
+          clearTimeout(pressTimer);
+        };
+
+        tr.addEventListener('mousedown', startPress);
+        tr.addEventListener('mouseup', cancelPress);
+        tr.addEventListener('mouseleave', cancelPress);
+        tr.addEventListener('touchstart', startPress, { passive: true });
+        tr.addEventListener('touchend', cancelPress);
+        tr.addEventListener('touchcancel', cancelPress);
+
+        sheetBody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+      clearDeleteSelection();
+      render();
+    });
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+      if (selectedDeleteIdx !== null) {
+        days[currentDateKey].entries.splice(selectedDeleteIdx, 1);
+        clearDeleteSelection();
+        render();
+      }
+    });
+
+    openingInput.addEventListener('input', () => {
+      if (currentDateKey === startDateKey) {
+        days[startDateKey].opening = parseFloat(openingInput.value) || 0;
+        render();
+      }
+    });
+
+    document.getElementById('addForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const money = parseFloat(document.getElementById('moneyInput').value);
+      const desc = document.getElementById('descInput').value.trim();
+      const type = document.getElementById('typeInput').value;
+      if (!money || !desc) return;
+
+      days[currentDateKey].entries.push({
+        money,
+        desc,
+        type,
+        time: currentTimeStr()
+      });
+      document.getElementById('moneyInput').value = '';
+      document.getElementById('descInput').value = '';
+      clearDeleteSelection();
+      render();
+    });
+
+    function goToDate(dateKey) {
+      currentDateKey = dateKey;
+      clearDeleteSelection();
+      if (currentDateKey !== startDateKey) {
+        const prevKey = addDays(currentDateKey, -1);
+        if (days[prevKey]) {
+          getDayData(currentDateKey).opening = calcClosing(days[prevKey]);
+        }
+      }
+      render();
+    }
+
+    document.getElementById('prevDayBtn').addEventListener('click', () => goToDate(addDays(currentDateKey, -1)));
+    document.getElementById('nextDayBtn').addEventListener('click', () => goToDate(addDays(currentDateKey, 1)));
+    document.getElementById('closeDayBtn').addEventListener('click', () => goToDate(addDays(currentDateKey, 1)));
+
+    render();
+  </script>
+</body>
+
+</html>
